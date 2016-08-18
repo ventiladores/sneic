@@ -48,8 +48,17 @@ function getPosInDirection(pos, direction) {
   }
 }
 
+var color = { // TODO buscar colores piola
+  background: "#77916A",
+  backgroundTransparent: "rgba(0, 0, 0, 0.2)",
+  menuLetter: "#161C13",
+  menuLetterEnd: "#161C13",
+  snakeHead: "#1b2217",
+  snakeBody: "#1b2217",
+  food: "#76535A"
+};
+
 var draw = {
-  backgroundColor: "#222222",
   menuTitle: [
     // S
     new coordPair(5, 2),
@@ -120,14 +129,10 @@ var draw = {
   ],
 
   clear: function() {
-    ctx.beginPath();
-    ctx.rect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = this.backgroundColor;
-    ctx.fill();
-    ctx.closePath();
+    this.rectangleWithSizeAt(new coordPair(0, 0), new size(canvas.width, canvas.height), color.background);
   },
 
-  rectangleWithSizeAt: function(pos, color, size) {
+  rectangleWithSizeAt: function(pos, size, color) {
     ctx.beginPath();
     ctx.rect(pos.x * size.width, pos.y * size.height, size.width, size.height);
     ctx.fillStyle = color;
@@ -136,28 +141,185 @@ var draw = {
   },
 
   rectangleAt: function(pos, color) {
-    this.rectangleWithSizeAt(pos, color, bigPixel);
+    this.rectangleWithSizeAt(pos, bigPixel, color);
   },
 
   menuScreen: function() {
     this.clear();
 
     for (i = 0; i < this.menuTitle.length; i++) {
-      this.rectangleWithSizeAt(this.menuTitle[i], "#CCCCCC", menuPixel);
+      this.rectangleWithSizeAt(this.menuTitle[i], menuPixel, color.menuLetter);
     }
     for (i = 0; i < this.menuPlayButton.length; i++) {
-      this.rectangleWithSizeAt(this.menuPlayButton[i], "#CCCCCC", menuPixel);
+      this.rectangleWithSizeAt(this.menuPlayButton[i], menuPixel, color.menuLetter);
     }
   },
 
-  endGameScreen: function() { // TODO que muestre lo mismo que menuScreen incluyendo el puntaje
+  digit: function(dig) { // devuelve arreglo de pixeles del dígito dig. devuelve false si dig no es un dígito
+    switch (dig) {
+      case "0":
+        return [
+          new coordPair(0, 0),
+          new coordPair(1, 0),
+          new coordPair(2, 0),
+          new coordPair(2, 1),
+          new coordPair(2, 2),
+          new coordPair(2, 3),
+          new coordPair(2, 4),
+          new coordPair(1, 4),
+          new coordPair(0, 4),
+          new coordPair(0, 3),
+          new coordPair(0, 2),
+          new coordPair(0, 1)
+        ];
+      case "1":
+        return [
+          new coordPair(2, 0),
+          new coordPair(2, 1),
+          new coordPair(2, 2),
+          new coordPair(2, 3),
+          new coordPair(2, 4)
+        ];
+      case "2":
+        return [
+          new coordPair(0, 0),
+          new coordPair(1, 0),
+          new coordPair(2, 0),
+          new coordPair(2, 1),
+          new coordPair(2, 2),
+          new coordPair(1, 2),
+          new coordPair(0, 2),
+          new coordPair(0, 3),
+          new coordPair(0, 4),
+          new coordPair(1, 4),
+          new coordPair(2, 4)
+        ];
+      case "3":
+        return [
+          new coordPair(0, 0),
+          new coordPair(1, 0),
+          new coordPair(2, 0),
+          new coordPair(2, 1),
+          new coordPair(2, 2),
+          new coordPair(1, 2),
+          new coordPair(2, 3),
+          new coordPair(2, 4),
+          new coordPair(1, 4),
+          new coordPair(0, 4)
+        ];
+      case "4":
+        return [
+          new coordPair(0, 0),
+          new coordPair(0, 1),
+          new coordPair(0, 2),
+          new coordPair(1, 2),
+          new coordPair(2, 0),
+          new coordPair(2, 1),
+          new coordPair(2, 2),
+          new coordPair(2, 3),
+          new coordPair(2, 4)
+        ];
+      case "5":
+        return [
+          new coordPair(2, 0),
+          new coordPair(1, 0),
+          new coordPair(0, 0),
+          new coordPair(0, 1),
+          new coordPair(0, 2),
+          new coordPair(1, 2),
+          new coordPair(2, 2),
+          new coordPair(2, 3),
+          new coordPair(2, 4),
+          new coordPair(1, 4),
+          new coordPair(0, 4)
+        ];
+      case "6":
+        return [
+          new coordPair(2, 0),
+          new coordPair(1, 0),
+          new coordPair(0, 0),
+          new coordPair(0, 1),
+          new coordPair(0, 2),
+          new coordPair(0, 3),
+          new coordPair(0, 4),
+          new coordPair(1, 4),
+          new coordPair(2, 4),
+          new coordPair(2, 3),
+          new coordPair(2, 2),
+          new coordPair(1, 2)
+        ];
+      case "7":
+        return [
+          new coordPair(0, 0),
+          new coordPair(1, 0),
+          new coordPair(2, 0),
+          new coordPair(2, 1),
+          new coordPair(2, 2),
+          new coordPair(1, 2),
+          new coordPair(2, 3),
+          new coordPair(2, 4)
+        ];
+      case "8":
+        return [
+          new coordPair(0, 0),
+          new coordPair(1, 0),
+          new coordPair(2, 0),
+          new coordPair(2, 1),
+          new coordPair(2, 2),
+          new coordPair(2, 3),
+          new coordPair(2, 4),
+          new coordPair(1, 4),
+          new coordPair(0, 4),
+          new coordPair(0, 3),
+          new coordPair(0, 2),
+          new coordPair(0, 1),
+          new coordPair(1, 2)
+        ];
+      case "9":
+        return [
+          new coordPair(1, 0),
+          new coordPair(0, 0),
+          new coordPair(0, 1),
+          new coordPair(0, 2),
+          new coordPair(1, 2),
+          new coordPair(2, 0),
+          new coordPair(2, 1),
+          new coordPair(2, 2),
+          new coordPair(2, 3),
+          new coordPair(2, 4)
+        ];
+      default:
+        return false;
+    }
+  },
+
+  number: function(num) {  // descompone num en digitos y los imprime
+    var numString = num.toString();
+    if (numString.length < 3) {
+      var aux = "000" + numString;
+      numString = aux.substr(aux.length - 3);
+    }
+
+    for (var i = 0; i < numString.length; i++) {
+      var digitPixels = this.digit(numString[i]);
+      for (var j = 0; j < digitPixels.length; j++) {
+        this.rectangleWithSizeAt(digitPixels[j].add(new coordPair(11 - 4 * (numString.length - i - 1), 9)), menuPixel, color.menuLetterEnd);
+      }
+    }
+  },
+
+  endGameScreen: function() {
+    this.rectangleWithSizeAt(new coordPair(0, 0), new size(canvas.width, canvas.height), color.backgroundTransparent);
+
     for (i = 0; i < this.menuTitle.length; i++) {
-      this.rectangleWithSizeAt(this.menuTitle[i], "#CCCCCC", menuPixel);
+      this.rectangleWithSizeAt(this.menuTitle[i], menuPixel, color.menuLetterEnd);
     }
-    // TODO display score
+
     for (i = 0; i < this.menuPlayButton.length; i++) {
-      this.rectangleWithSizeAt(this.menuPlayButton[i].add(new coordPair(6, 0)), "#CCCCCC", menuPixel);
+      this.rectangleWithSizeAt(this.menuPlayButton[i].add(new coordPair(6, 0)), menuPixel, color.menuLetterEnd);
     }
+
+    this.number(snake.body.length);
   },
 
   screen: function() {
@@ -165,14 +327,14 @@ var draw = {
 
     // resto del cuerpo
     for (i = snake.headIndex + 1; i < snake.body.length + snake.headIndex; i++) {
-      this.rectangleAt(snake.body[(i % snake.body.length)], "#AAAAAA");
+      this.rectangleAt(snake.body[(i % snake.body.length)], color.snakeBody);
     }
 
     // cabeza
-    this.rectangleAt(snake.body[snake.headIndex], "#AA2222");
+    this.rectangleAt(snake.body[snake.headIndex], color.snakeHead);
 
     // comida
-    this.rectangleAt(food.pos, "#00AA00");
+    this.rectangleAt(food.pos, color.food);
   }
 };
 
@@ -219,7 +381,7 @@ var food = {
   }
 };
 
-var game = { // TODO agregar puntaje. visualizarlo cuando se pierde.
+var game = {
   interval: undefined,
 
   menuScreen: function() {
