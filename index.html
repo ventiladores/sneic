@@ -45,6 +45,17 @@
             transform: translate(-50%, -50%);
         }
 
+        #logo {
+            position: fixed;
+            bottom: 2px;
+            right: 6px;
+            opacity: .25;
+        }
+
+        #logo:hover {
+            opacity: .5;
+        }
+
         canvas {
             display: block;
             margin: 0 auto;
@@ -61,8 +72,14 @@
         <div id="juego">
             <canvas id="sneic" width="480" height="320"></canvas>
         </div>
+        <div id="logo">
+            <a href="https://github.com/ventiladores/sneic">
+              <img src="logo.png">
+            </a>
+        </div>
     </div>
     <script src="sneic.js"></script>
+
 </body>
 
 </html>

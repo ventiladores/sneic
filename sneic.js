@@ -48,13 +48,13 @@ function getPosInDirection(pos, direction) {
   }
 }
 
-var color = { // TODO buscar colores piola
+var color = {
   background: "#77916A",
-  backgroundTransparent: "rgba(0, 0, 0, 0.2)",
-  menuLetter: "#161C13",
-  menuLetterEnd: "#161C13",
-  snakeHead: "#1b2217",
-  snakeBody: "#1b2217",
+  backgroundTransparent: "rgba(255, 255, 255, 0.2)",
+  menuLetter: "#2b3626",
+  menuLetterEnd: "#2b3626",
+  snakeHead: "#2b3626",
+  snakeBody: "#2b3626",
   food: "#76535A"
 };
 
@@ -293,7 +293,7 @@ var draw = {
     }
   },
 
-  number: function(num) {  // descompone num en digitos y los imprime
+  number: function(num) { // descompone num en digitos y los imprime
     var numString = num.toString();
     if (numString.length < 3) {
       var aux = "000" + numString;
@@ -442,11 +442,20 @@ var game = {
 };
 
 var listeners = {
-  addMouseUp: function() {
-    document.addEventListener("mouseup", this.mouseUpHandler, false);
-  },
-  removeMouseUp: function() {
-    document.removeEventListener("mouseup", this.mouseUpHandler, false);
+  keyDownHandler: function(e) {
+    switch (e.key) {
+      case "ArrowUp":
+        snake.nextDirection = (snake.currentDirection === "down") ? snake.nextDirection : "up";
+        break;
+      case "ArrowDown":
+        snake.nextDirection = (snake.currentDirection === "up") ? snake.nextDirection : "down";
+        break;
+      case "ArrowLeft":
+        snake.nextDirection = (snake.currentDirection === "right") ? snake.nextDirection : "left";
+        break;
+      case "ArrowRight":
+        snake.nextDirection = (snake.currentDirection === "left") ? snake.nextDirection : "right";
+    }
   },
   mouseUpHandler: function(e) {
     if (e.button === 0) {
@@ -461,21 +470,12 @@ var listeners = {
   removeKeyDown: function() {
     document.removeEventListener("keydown", this.keyDownHandler, false);
   },
-  keyDownHandler: function(e) {
-    switch (e.key) {
-      case "ArrowUp":
-        snake.nextDirection = (snake.currentDirection === "down") ? snake.nextDirection : "up";
-        break;
-      case "ArrowDown":
-        snake.nextDirection = (snake.currentDirection === "up") ? snake.nextDirection : "down";
-        break;
-      case "ArrowLeft":
-        snake.nextDirection = (snake.currentDirection === "right") ? snake.nextDirection : "left";
-        break;
-      default: // "ArrowRight"
-        snake.nextDirection = (snake.currentDirection === "left") ? snake.nextDirection : "right";
-    }
-  }
+  addMouseUp: function() {
+    document.addEventListener("mouseup", this.mouseUpHandler, false);
+  },
+  removeMouseUp: function() {
+    document.removeEventListener("mouseup", this.mouseUpHandler, false);
+  },
 };
 
 game.menuScreen();
